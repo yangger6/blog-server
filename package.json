@@ -6,8 +6,8 @@
   "author": "yangger <i@yangger.cn>",
   "license": "MIT",
   "scripts": {
-    "build": "rm -rf ~/lib/* && tsc",
-    "dev": "rm -rf ~/lib/* && tsc && node app.js",
+    "build": "rm -R ./lib/* && tsc",
+    "dev": "rm -R ./lib/* && tsc && node app.js",
     "srart": "node app.js"
   },
   "dependencies": {

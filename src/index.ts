@@ -12,6 +12,7 @@ async function startApp() {
         controllers: [__dirname + '/controllers/**/*.js'],
         middlewares: [__dirname + '/middlewares/**/*.js'],
         interceptors: [__dirname + '/interceptors/**/*.js'],
+        // authorizationChecker,
         validation: true,
         defaultErrorHandler: true,
     }).listen(3000, () => {

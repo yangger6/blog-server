@@ -1,7 +1,8 @@
 import {Body, Controller, Get, HttpCode, Post} from 'routing-controllers'
 import {UserDoc, UserProps} from '../model/User'
-import Userservice from '../services/Userservice'
+import UserService from '../services/UserService'
 import {httpCode} from '../utils/httpcode'
+import {IHttpResult} from '../interfaces/httpResult'
 @Controller('/users')
 // GET：读取（Read）
 // POST：新建（Create）
@@ -10,19 +11,15 @@ import {httpCode} from '../utils/httpcode'
 // DELETE：删除（Delete）
 export class UserController {
     @Get()
-    login(@Body() {userName, password}: UserProps) {
-        console.log(userName)
-        console.log(password)
-        return {
-            userName,
-            password
-        }
+    @HttpCode(httpCode.OK)
+    async login(@Body() {userName, password}: UserProps): Promise<IHttpResult> {
+        const res = await UserService.login(userName, password)
+        return res
     }
     @Post()
     @HttpCode(httpCode.CREATED)
-    async register(@Body() user: UserDoc) {
-        const res = await Userservice.register(user)
+    async register(@Body() user: UserDoc): Promise<IHttpResult> {
+        const res = await UserService.register(user)
         return res
-
     }
 }

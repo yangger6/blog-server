@@ -8,6 +8,12 @@ const UserSchema = createSchema({
     password: Type.string(),
     salt: Type.string(),
     email: Type.string(),
+    token: Type.object({
+        default: {}
+    }).of({
+        value: Type.string(),
+        expiredTime: Type.date()
+    }),
     createTime: Type.date({
         default: Date.now() as any,
     }),
