@@ -2,7 +2,8 @@ import mongoose from 'mongoose'
 import config from '../config'
 export const connectDB = async () => {
     mongoose.connect(config.dbLink, {
-        useNewUrlParser: true
+        useNewUrlParser: true,
+        useFindAndModify: false
     })
     const db = mongoose.connection
     db.on('error', console.error.bind(console, 'connection error:'))

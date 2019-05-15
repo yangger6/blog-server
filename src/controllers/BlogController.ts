@@ -1,16 +1,27 @@
-import {Body, Controller, Post, UseBefore} from 'routing-controllers'
+import {Body, Controller, CurrentUser, Get, Param, Post, UseAfter, UseBefore, UseInterceptor} from 'routing-controllers'
 import {AuthorizationCheckerMiddleware} from '../middlewares/AuthorizationCheckerMiddleware'
 import {BlogDoc} from '../model/Blog'
-import {IHttpResult} from '../interfaces/httpResult'
-import {httpCode} from '../utils/httpcode'
+import {IHttpResult} from '../interfaces/IHttpResult'
+import BlogService from '../services/BlogService'
+import {UserDoc} from '../model/User'
+import {IHttpQuery} from '../interfaces/IHttpQuery'
+import {beatyMongooseResult} from '../interceptors/beatyMongooseResult'
 
 @Controller('/blogs')
-@UseBefore(AuthorizationCheckerMiddleware)
 export class BlogController {
-    @Post()
-    async addBlog(@Body() blog: BlogDoc): Promise<IHttpResult> {
-        return {
-            httpCode: httpCode.FORBIDDEN
+    @Get('/:id')
+    @UseInterceptor(beatyMongooseResult)
+    async getBlogs(@Param('id') id: number, @Body() query: IHttpQuery) {
+        if (!isNaN(id)) { // maybe id is 0
+            const blog = await BlogService.selectBlogById(id)
+            return blog
         }
+        console.log(1)
+    }
+    @Post()
+    @UseBefore(AuthorizationCheckerMiddleware)
+    async addBlog(@CurrentUser() user: UserDoc, @Body() blog: BlogDoc): Promise<IHttpResult> {
+        const result = await BlogService.createBlog(blog, user.userName)
+        return result
     }
 }

@@ -3,12 +3,14 @@ import {useKoaServer} from 'routing-controllers'
 import Koa from 'koa'
 import {connectDB} from './model'
 import {log} from './plugins/log'
+import {currentUserChecker} from './interceptors/currentUserChecker'
 async function startApp() {
     const app = new Koa()
     await connectDB()
     log.info('the app is starting')
     useKoaServer(app, {
         routePrefix: '/api',
+        currentUserChecker,
         controllers: [__dirname + '/controllers/**/*.js'],
         middlewares: [__dirname + '/middlewares/**/*.js'],
         interceptors: [__dirname + '/interceptors/**/*.js'],

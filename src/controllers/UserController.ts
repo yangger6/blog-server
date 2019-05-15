@@ -2,7 +2,7 @@ import {Body, Controller, Get, HttpCode, Post} from 'routing-controllers'
 import {UserDoc, UserProps} from '../model/User'
 import UserService from '../services/UserService'
 import {httpCode} from '../utils/httpcode'
-import {IHttpResult} from '../interfaces/httpResult'
+import {IHttpResult} from '../interfaces/IHttpResult'
 @Controller('/users')
 // GET：读取（Read）
 // POST：新建（Create）

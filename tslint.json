@@ -11,6 +11,7 @@
     "member-access": false,
     "no-debugger": false,
     "only-arrow-functions": false,
-    "no-duplicate-super": false
+    "no-duplicate-super": true,
+    "interface-name": false
   }
 }
