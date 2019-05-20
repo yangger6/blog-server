@@ -1,5 +1,5 @@
 import {createSchema, ExtractDoc, ExtractProps, Type, typedModel} from 'ts-mongoose'
-import {Counter, CounterDoc, CounterProps} from './Counter'
+import {Counter, CounterDoc} from './Counter'
 import {log} from '../plugins/log'
 import PhotoService from '../services/PhotoService'
 const BlogSchema = createSchema({

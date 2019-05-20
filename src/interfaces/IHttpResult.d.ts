@@ -4,4 +4,5 @@ export interface IHttpResult {
     error?: string
     detail?: any
     data?: any
+    total?: number
 }

@@ -1,7 +1,6 @@
 export interface IHttpQuery {
-    limit?: number,
+    title?: string,
     page?: number,
     pageSize?: number,
-    sortBy?: string,
-    order?: 'asc' | 'desc'
+    tags?: string | string[]
 }
