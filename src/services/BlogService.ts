@@ -12,7 +12,6 @@ export default {
             page = page || 1 // default page 1
             title = title || ''
             tags = typeof tags === 'string' ? tags.split(',') : []
-            console.log(tags)
             const blogs = await Blog.find({
                 title: {
                     $regex: new RegExp(title, 'gi')
@@ -36,7 +35,8 @@ export default {
             log.error(e)
             return {
                 error: 'search error',
-                detail: 'query error'
+                detail: 'query error',
+                httpCode:  httpCode.INTERNAL_SERVER_ERROR
             }
         }
 
@@ -60,7 +60,8 @@ export default {
         } catch (e) {
             return {
                 error: 'search error',
-                detail: 'cannot find blog id'
+                detail: 'cannot find blog id',
+                httpCode:  httpCode.INTERNAL_SERVER_ERROR
             }
         }
     },
@@ -78,6 +79,43 @@ export default {
             return {
                 error: 'create blog error',
                 detail: e.message,
+                httpCode:  httpCode.INTERNAL_SERVER_ERROR
+            }
+        }
+    },
+    async updateBlog(blog: BlogDoc): Promise<IHttpResult> {
+        try {
+            console.log(blog)
+            const  result = await Blog.findOneAndUpdate({
+                id: blog.id
+            }, blog)
+            if (result) {
+                return {
+                    msg: 'ok'
+                }
+            } else {
+                throw Error('can not find blog id')
+            }
+        } catch (e) {
+            log.error('update blog error')
+            log.error(e)
+            return {
+                error: 'update blog error',
+                detail: 'cannot find blog id to update',
+                httpCode:  httpCode.INTERNAL_SERVER_ERROR
+            }
+        }
+    },
+    async deleteBlog(id: number): Promise<IHttpResult> {
+        try {
+            await Blog.deleteOne({id})
+            return {
+                msg: 'ok'
+            }
+        } catch (e) {
+            return {
+                error: 'delete blog error',
+                detail: 'cannot find blog id to delete',
                 httpCode:  httpCode.INTERNAL_SERVER_ERROR
             }
         }
