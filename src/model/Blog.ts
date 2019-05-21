@@ -10,6 +10,9 @@ const BlogSchema = createSchema({
     cover: Type.optionalString({
         default: 'https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture'
     }),
+    headImage: Type.string({
+        default: 'https://avatars3.githubusercontent.com/u/23329645?s=460&v=4'
+    }),
     author: Type.string(),
     body: Type.string(),
     tags: Type.array({
