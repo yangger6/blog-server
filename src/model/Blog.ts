@@ -8,7 +8,7 @@ const BlogSchema = createSchema({
     }),
     title: Type.string(),
     cover: Type.optionalString({
-        default: 'https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture'
+        default: ''
     }),
     headImage: Type.string({
         default: 'https://avatars3.githubusercontent.com/u/23329645?s=460&v=4'

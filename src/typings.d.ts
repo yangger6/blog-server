@@ -2,6 +2,7 @@ declare module '*.json' {
     const value: any
     export default value
 }
+declare module 'cos-nodejs-sdk-v5'
 declare module 'ramda' {
     export function F (...rest: any[]): any;
     export function T (...rest: any[]): any;
