@@ -3,7 +3,10 @@ import * as R from 'ramda'
 import {IHttpResult} from '../interfaces/IHttpResult'
 export const beautyMongooseResult = (action: Action, content: IHttpResult) => {
     const dataIsArray = (obj: IHttpResult): boolean => obj.data instanceof Array
-    const toObject = (obj: any) => obj.toObject()
+    const toObject = (obj: any) => {
+        console.log(obj)
+        return obj.toObject()
+    }
     const beautyData = R.ifElse(
         dataIsArray,
         R.over(R.lensProp('data'), R.map(toObject)),

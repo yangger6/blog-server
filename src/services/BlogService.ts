@@ -8,22 +8,29 @@ const filterParams = '-password -_id -__v'
 export default {
     async selectBlogByQuery({title, tags, page, pageSize}: IHttpQuery): Promise<IHttpResult> {
         try {
-            pageSize = pageSize || 10 // default 10
+            pageSize = Number(pageSize) || 10 // default 10
             page = page || 1 // default page 1
             title = title || ''
             tags = typeof tags === 'string' ? tags.split(',') : []
             const blogs = await Blog.find({
-                title: {
-                    $regex: new RegExp(title, 'gi')
-                },
-                tags: {
-                    $in: tags
-                }
+                $or: [
+                    {
+                        title: {
+                            $regex: new RegExp(title, 'gi')
+                        }
+                    },
+                    {
+                        tags: {
+                            $in: tags
+                        }
+                    }
+                ]
             })
             .sort('-createTime')
             .skip((page - 1) * pageSize)
             .limit(pageSize)
             .select(filterParams)
+            console.log(blogs)
             return {
                 msg: 'ok',
                 data: blogs,
