@@ -17,6 +17,7 @@
     "@types/mongoose": "^5.5.0",
     "@types/request": "^2.48.1",
     "@types/uuid": "^3.4.4",
+    "colorthief": "^2.3.0",
     "cos-nodejs-sdk-v5": "^2.5.9",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",

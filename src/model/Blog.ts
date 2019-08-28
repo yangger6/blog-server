@@ -7,6 +7,7 @@ const BlogSchema = createSchema({
         default: 0
     }),
     title: Type.string(),
+    describe: Type.optionalString(),
     cover: Type.optionalString({
         default: ''
     }),

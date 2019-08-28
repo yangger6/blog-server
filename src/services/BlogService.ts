@@ -30,11 +30,14 @@ export default {
             .skip((page - 1) * pageSize)
             .limit(pageSize)
             .select(filterParams)
-            console.log(blogs)
             return {
                 msg: 'ok',
-                data: blogs,
-                total: blogs.length
+                data: {
+                    data: blogs,
+                    total: blogs.length,
+                    pageSize,
+                    page
+                },
             }
         } catch (e) {
             console.log(e)
