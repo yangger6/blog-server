@@ -37,6 +37,16 @@ const BlogSchema = createSchema({
         favs: Type.number({
             default: 0
         }),
+    }),
+    theme: Type.object({
+        default: {}
+    }).of({
+        dominant: Type.string({
+            default: ''
+        }),
+        secondary: Type.string({
+            default: ''
+        }),
     })
 }, {
     timestamps: {createdAt: 'createTime', updatedAt: 'updateTime'}
@@ -60,7 +70,17 @@ BlogSchema.pre('save', async function (next) {
         if (result) {
             doc.id = result.seq
             if (!doc.cover) {
-                doc.cover = await PhotoService.getRandomCover()
+                const cover = await PhotoService.getRandomCover()
+                doc.cover = cover.url
+                if (cover.theme) {
+                    doc.theme = cover.theme
+                }
+            }
+            if (!doc.theme) {
+                const theme = await PhotoService.getImageTheme(doc.cover)
+                if (theme) {
+                    doc.theme = theme
+                }
             }
         }
         await next()

@@ -259,3 +259,7 @@ declare module 'ramda' {
     export function zipWith (...rest: any[]): any;
     export function thunkify (...rest: any[]): any;
 }
+declare module 'colorthief' {
+    export function getColor(img: any): Promise<string>
+    export function getPalette(img: any): Promise<any>
+}

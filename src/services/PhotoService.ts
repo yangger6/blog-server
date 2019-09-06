@@ -2,8 +2,12 @@ import request from 'request'
 import config from '../config/index'
 import Cos from 'cos-nodejs-sdk-v5'
 import {log} from '../plugins/log'
+import colorThief from 'colorthief'
+import {ICover, ICoverTheme} from '../interfaces/IPhoto'
+import * as fs from 'fs'
+import {resolve, join} from 'path'
 export default {
-    getRandomCover(): Promise<string> {
+    getRandomCover(): Promise<ICover> {
         return new Promise((resolve, reject) => {
             const url = 'https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture'
             request({
@@ -37,9 +41,19 @@ export default {
                             log.error('upload image error:')
                             log.error(err)
                             if (!hostPrefix) {
-                                resolve(data.Location)
+                                resolve({
+                                    url: data.Location
+                                })
                             } else {
-                                resolve(hostPrefix + Key)
+                                const imageUrl = hostPrefix + Key
+                                this.getImageTheme(body, currentFileType).then(theme => {
+                                    resolve({
+                                        url: imageUrl,
+                                        theme
+                                    })
+                                }).catch(e => {
+                                    console.log(e)
+                                })
                             }
                         })
                     } else {
@@ -47,6 +61,66 @@ export default {
                     }
                 }
             })
+        })
+    },
+    getImageTheme(url: string | Buffer, fileType: string = 'png'): Promise<ICoverTheme> {
+        const bufferToImage = (buffer: Buffer) => {
+            try {
+                const key = new Date().getTime() + Math.floor(Math.random() * 10000).toString().slice(1, 5)
+                let imgPath = join(process.cwd(), './tempImage/')
+                imgPath += `${key}.${fileType}`
+                fs.writeFileSync(imgPath, buffer)
+                return resolve(imgPath)
+            } catch (e) {
+                log.error(`buffer to image error -> ${e}`)
+                return false
+            }
+        }
+        const deleteLocalImage = (deleteUrl: string) => {
+            try {
+                log.info(`start delete local file by ->${deleteUrl}`)
+                fs.unlinkSync(deleteUrl)
+                log.info(`deleted local image by -> ${deleteUrl}`)
+                return true
+            } catch (e) {
+                log.error(`delete local image error -> ${e}`)
+                return false
+            }
+        }
+        return new Promise(async (resolve, reject) => {
+            try {
+                if (url instanceof Buffer) {
+                    log.info('buffer get palette start')
+                    const img = bufferToImage(url)
+                    if (img) {
+                        colorThief.getPalette(img).then(([dominant, secondary]: string[]) => {
+                            log.info('resolved image palette')
+                            if (deleteLocalImage(img)) {
+                                log.info('buffer get palette end')
+                                resolve({
+                                    dominant,
+                                    secondary
+                                })
+                            }
+                        })
+                    } else {
+                        reject(null)
+                    }
+                } else {
+                    log.info('imgUrl get palette start')
+                    colorThief.getPalette(url).then(([dominant, secondary]: string[]) => {
+                        resolve({
+                            dominant,
+                            secondary
+                        })
+                    }).catch(e => {
+                        log.error('')
+                    })
+                }
+            } catch (e) {
+                log.error(e)
+                reject(e)
+            }
         })
     }
 }
