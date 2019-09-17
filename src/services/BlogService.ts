@@ -1,12 +1,12 @@
 import * as R from 'ramda'
 import {IHttpResult} from '../interfaces/IHttpResult'
 import {BlogDoc, Blog} from '../model/Blog'
-import {log} from '../plugins/log'
-import {httpCode} from '../utils/httpcode'
-import {IHttpQuery} from '../interfaces/IHttpQuery'
+import {log} from '../plugins/Log'
+import {httpcode} from '../utils/Httpcode'
+import {IHttpQueryD} from '../interfaces/IHttpQuery'
 const filterParams = '-password -_id -__v'
 export default {
-    async selectBlogByQuery({title, tags, page, pageSize}: IHttpQuery): Promise<IHttpResult> {
+    async selectBlogByQuery({title, tags, page, pageSize}: IHttpQueryD): Promise<IHttpResult> {
         try {
             pageSize = Number(pageSize) || 10 // default 10
             page = page || 1 // default page 1
@@ -46,7 +46,7 @@ export default {
             return {
                 error: 'search error',
                 detail: 'query error',
-                httpCode:  httpCode.INTERNAL_SERVER_ERROR
+                httpCode:  httpcode.INTERNAL_SERVER_ERROR
             }
         }
 
@@ -71,7 +71,7 @@ export default {
             return {
                 error: 'search error',
                 detail: 'cannot find blog id',
-                httpCode:  httpCode.INTERNAL_SERVER_ERROR
+                httpCode:  httpcode.INTERNAL_SERVER_ERROR
             }
         }
     },
@@ -89,7 +89,7 @@ export default {
             return {
                 error: 'create blog error',
                 detail: e.message,
-                httpCode:  httpCode.INTERNAL_SERVER_ERROR
+                httpCode:  httpcode.INTERNAL_SERVER_ERROR
             }
         }
     },
@@ -112,7 +112,7 @@ export default {
             return {
                 error: 'update blog error',
                 detail: 'cannot find blog id to update',
-                httpCode:  httpCode.INTERNAL_SERVER_ERROR
+                httpCode:  httpcode.INTERNAL_SERVER_ERROR
             }
         }
     },
@@ -126,7 +126,7 @@ export default {
             return {
                 error: 'delete blog error',
                 detail: 'cannot find blog id to delete',
-                httpCode:  httpCode.INTERNAL_SERVER_ERROR
+                httpCode:  httpcode.INTERNAL_SERVER_ERROR
             }
         }
     }

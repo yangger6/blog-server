@@ -1,4 +1,4 @@
-export const httpCode = {
+export const httpcode = {
     /**
      * 请求成功  幂等的
      */

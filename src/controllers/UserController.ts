@@ -1,23 +1,37 @@
 import {Body, Get, HttpCode, JsonController, Post} from 'routing-controllers'
 import {UserDoc, UserProps} from '../model/User'
 import UserService from '../services/UserService'
-import {httpCode} from '../utils/httpcode'
+import {httpcode} from '../utils/Httpcode'
 import {IHttpResult} from '../interfaces/IHttpResult'
+
+const TryCatchFunction = function (target: object,
+                                   propertyName: string,
+                                   propertyDesciptor: PropertyDescriptor): PropertyDescriptor {
+    const method = propertyDesciptor.value
+    propertyDesciptor.value = async function (...args: any[]) {
+        const params = args.map(arg => JSON.stringify(arg)).join()
+        try {
+            const result = await method.apply(this, args)
+            const r = JSON.stringify(result)
+            console.log(`Call: ${propertyName}(${params}) => ${r}`);
+            return result
+        } catch (e) {
+            console.log(e)
+        }
+    }
+return propertyDesciptor
+}
+
 @JsonController('/users')
-// GET：读取（Read）
-// POST：新建（Create）
-// PUT：更新（Update）
-// PATCH：更新（Update），通常是部分更新
-// DELETE：删除（Delete）
 export class UserController {
     @Get()
-    @HttpCode(httpCode.OK)
+    @HttpCode(httpcode.OK)
+    @TryCatchFunction
     async login(@Body() {userName, password}: UserProps): Promise<IHttpResult> {
-        const res = await UserService.login(userName, password)
-        return res
+        return await UserService.login(userName, password)
     }
     @Post()
-    @HttpCode(httpCode.CREATED)
+    @HttpCode(httpcode.CREATED)
     async register(@Body() user: UserDoc): Promise<IHttpResult> {
         const res = await UserService.register(user)
         return res

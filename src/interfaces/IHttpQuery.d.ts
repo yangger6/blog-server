@@ -1,4 +1,4 @@
-export interface IHttpQuery {
+export interface IHttpQueryD {
     title?: string,
     page?: number,
     pageSize?: number,

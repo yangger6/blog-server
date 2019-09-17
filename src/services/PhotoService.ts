@@ -1,7 +1,7 @@
 import request from 'request'
 import config from '../config/index'
 import Cos from 'cos-nodejs-sdk-v5'
-import {log} from '../plugins/log'
+import {log} from '../plugins/Log'
 import colorThief from 'colorthief'
 import {ICover, ICoverTheme} from '../interfaces/IPhoto'
 import * as fs from 'fs'
@@ -87,7 +87,7 @@ export default {
                 return false
             }
         }
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             try {
                 if (url instanceof Buffer) {
                     log.info('buffer get palette start')

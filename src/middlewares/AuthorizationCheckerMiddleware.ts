@@ -1,6 +1,6 @@
 import {KoaMiddlewareInterface} from 'routing-controllers'
 import {User, UserDoc} from '../model/User'
-import {httpCode} from '../utils/httpcode'
+import {httpcode} from '../utils/Httpcode'
 
 export class AuthorizationCheckerMiddleware implements KoaMiddlewareInterface {
     async use(ctx: any, next: (err?: any) => Promise<any>): Promise<any> {
@@ -12,14 +12,14 @@ export class AuthorizationCheckerMiddleware implements KoaMiddlewareInterface {
             if (user.token.expiredTime > new Date()) {
                 await next()
             } else {
-                ctx.response.status = httpCode.UN_AUTHORIZED
+                ctx.response.status = httpcode.UN_AUTHORIZED
                 ctx.body = {
                     error: 'auth check error',
                     details: 'token is expired'
                 }
             }
         } else {
-            ctx.response.status = httpCode.UN_AUTHORIZED
+            ctx.response.status = httpcode.UN_AUTHORIZED
             ctx.body = {
                 error: 'auth check error',
                 details: 'not token or no login'

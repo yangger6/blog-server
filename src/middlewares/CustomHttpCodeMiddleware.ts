@@ -1,6 +1,6 @@
 import {KoaMiddlewareInterface, Middleware} from 'routing-controllers'
 import {User, UserDoc} from '../model/User'
-import {httpCode} from '../utils/httpcode'
+import {httpcode} from '../utils/Httpcode'
 
 @Middleware({type: 'after'})
 export class CustomHttpCodeMiddleware implements KoaMiddlewareInterface {

@@ -1,5 +1,6 @@
 {
   "extends": ["tslint:latest", "tslint-config-prettier"],
+  "rulesDirectory": ["node_modules/tslint-microsoft-contrib"],
   "rules": {
     "no-var-requires": false,
     "no-submodule-imports": false,
