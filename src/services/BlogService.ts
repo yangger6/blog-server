@@ -1,18 +1,19 @@
-import * as R from 'ramda'
 import {IHttpResult} from '../interfaces/IHttpResult'
-import {BlogDoc, Blog} from '../model/Blog'
+import {BlogDoc, Blog} from '../models/Blog'
 import {log} from '../plugins/Log'
-import {httpcode} from '../utils/Httpcode'
-import {IHttpQueryD} from '../interfaces/IHttpQuery'
+import httpCode from '../utils/HttpCode'
+import {IHttpQuery} from '../interfaces/IHttpQuery'
+
 const filterParams = '-password -_id -__v'
+
 export default {
-    async selectBlogByQuery({title, tags, page, pageSize}: IHttpQueryD): Promise<IHttpResult> {
+    async selectBlogByQuery({title, tags, page, pageSize}: IHttpQuery): Promise<IHttpResult> {
         try {
-            pageSize = Number(pageSize) || 10 // default 10
+            pageSize = pageSize || 10 // default 10
             page = page || 1 // default page 1
             title = title || ''
             tags = typeof tags === 'string' ? tags.split(',') : []
-            const blogs = await Blog.find({
+            const blogArray = await Blog.find({
                 $or: [
                     {
                         title: {
@@ -33,8 +34,8 @@ export default {
             return {
                 msg: 'ok',
                 data: {
-                    data: blogs,
-                    total: blogs.length,
+                    data: blogArray,
+                    total: blogArray.length,
                     pageSize,
                     page
                 },
@@ -46,11 +47,11 @@ export default {
             return {
                 error: 'search error',
                 detail: 'query error',
-                httpCode:  httpcode.INTERNAL_SERVER_ERROR
+                httpCode:  httpCode.INTERNAL_SERVER_ERROR
             }
         }
-
     },
+
     async selectBlogById(id: number): Promise<IHttpResult> {
         try {
             const blog = await Blog.findOne({
@@ -71,10 +72,11 @@ export default {
             return {
                 error: 'search error',
                 detail: 'cannot find blog id',
-                httpCode:  httpcode.INTERNAL_SERVER_ERROR
+                httpCode:  httpCode.INTERNAL_SERVER_ERROR
             }
         }
     },
+
     async createBlog(blog: BlogDoc, author: string): Promise<IHttpResult> {
         try {
             const newBlog = new Blog(blog)
@@ -89,10 +91,11 @@ export default {
             return {
                 error: 'create blog error',
                 detail: e.message,
-                httpCode:  httpcode.INTERNAL_SERVER_ERROR
+                httpCode:  httpCode.INTERNAL_SERVER_ERROR
             }
         }
     },
+
     async updateBlog(blog: BlogDoc): Promise<IHttpResult> {
         try {
             console.log(blog)
@@ -112,10 +115,11 @@ export default {
             return {
                 error: 'update blog error',
                 detail: 'cannot find blog id to update',
-                httpCode:  httpcode.INTERNAL_SERVER_ERROR
+                httpCode:  httpCode.INTERNAL_SERVER_ERROR
             }
         }
     },
+
     async deleteBlog(id: number): Promise<IHttpResult> {
         try {
             await Blog.deleteOne({id})
@@ -126,7 +130,7 @@ export default {
             return {
                 error: 'delete blog error',
                 detail: 'cannot find blog id to delete',
-                httpCode:  httpcode.INTERNAL_SERVER_ERROR
+                httpCode:  httpCode.INTERNAL_SERVER_ERROR
             }
         }
     }

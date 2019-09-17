@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import {useKoaServer} from 'routing-controllers'
 import Koa from 'koa'
-import {connectDB} from './model'
+import {connectDB} from './models'
 import {log} from './plugins/Log'
 import {currentUserChecker} from './interceptors/CurrentUserChecker'
 async function startApp() {

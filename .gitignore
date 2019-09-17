@@ -2,6 +2,7 @@ node_modules
 
 // idea
 .idea
+.idea/vcs.xml
 
 // config
 src/config/index.ts

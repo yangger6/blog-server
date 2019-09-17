@@ -1,6 +1,4 @@
 import {KoaMiddlewareInterface, Middleware} from 'routing-controllers'
-import {User, UserDoc} from '../model/User'
-import {httpcode} from '../utils/Httpcode'
 
 @Middleware({type: 'after'})
 export class CustomHttpCodeMiddleware implements KoaMiddlewareInterface {
@@ -9,6 +7,6 @@ export class CustomHttpCodeMiddleware implements KoaMiddlewareInterface {
             ctx.response.status = ctx.response.body.httpCode // set response status
             delete ctx.response.body.httpCode // delete unused property
         }
-        await next()
+        return next() // cannot await next()
     }
 }

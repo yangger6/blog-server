@@ -3,9 +3,10 @@ import config from '../config/index'
 import Cos from 'cos-nodejs-sdk-v5'
 import {log} from '../plugins/Log'
 import colorThief from 'colorthief'
+import uuidV4 from 'uuid/v4'
 import {ICover, ICoverTheme} from '../interfaces/IPhoto'
 import * as fs from 'fs'
-import {resolve, join} from 'path'
+import path from 'path'
 export default {
     getRandomCover(): Promise<ICover> {
         return new Promise((resolve, reject) => {
@@ -17,11 +18,11 @@ export default {
                 if (error) {
                     log.error('upload image error:')
                     log.error(error)
-                    reject(error)
+                    return reject(error)
                 }
                 const timeStamp = `${Date.now()}_${Math.floor(Math.random() * 1000000000)}`
                 const fileType = new RegExp('jpeg|jpg|png|webp|gif', 'gi').exec(response.headers['content-type'] || '')
-                const date = new Date()
+                const date = new Date() // FIX momentjs exchane Date
                 const y = date.getFullYear()
                 const m = date.getMonth() + 1
                 const d = date.getDate()
@@ -29,7 +30,7 @@ export default {
                 const Key = `assets/image/${y}/${m}/${d}/${timeStamp}.${currentFileType}`
                 if (body instanceof Buffer) {
                     if (Object.values(config.oss).filter((str: string | undefined) => str).length >= 4) { // need 4 correct params
-                        const {SecretId, SecretKey, Bucket, Region, hostPrefix} = config.oss
+                        const {SecretId, SecretKey, Bucket, Region, HostPrefix} = config.oss
                         // upload to oss
                         const cos = new Cos({SecretId, SecretKey})
                         cos.putObject({
@@ -40,12 +41,12 @@ export default {
                         }, (err: string, data: {Location: string}) => {
                             log.error('upload image error:')
                             log.error(err)
-                            if (!hostPrefix) {
+                            if (!HostPrefix) {
                                 resolve({
                                     url: data.Location
                                 })
                             } else {
-                                const imageUrl = hostPrefix + Key
+                                const imageUrl = HostPrefix + Key
                                 this.getImageTheme(body, currentFileType).then(theme => {
                                     resolve({
                                         url: imageUrl,
@@ -57,7 +58,7 @@ export default {
                             }
                         })
                     } else {
-                        // upload to path
+                        // TODO upload to local
                     }
                 }
             })
@@ -66,11 +67,10 @@ export default {
     getImageTheme(url: string | Buffer, fileType: string = 'png'): Promise<ICoverTheme> {
         const bufferToImage = (buffer: Buffer) => {
             try {
-                const key = new Date().getTime() + Math.floor(Math.random() * 10000).toString().slice(1, 5)
-                let imgPath = join(process.cwd(), './tempImage/')
-                imgPath += `${key}.${fileType}`
+                let imgPath = path.join(process.cwd(), './tempImage/')
+                imgPath += `${uuidV4()}.${fileType}`
                 fs.writeFileSync(imgPath, buffer)
-                return resolve(imgPath)
+                return path.resolve(imgPath)
             } catch (e) {
                 log.error(`buffer to image error -> ${e}`)
                 return false

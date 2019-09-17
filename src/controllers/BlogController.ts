@@ -9,49 +9,49 @@ import {
     UseInterceptor,
 } from 'routing-controllers'
 import {AuthorizationCheckerMiddleware} from '../middlewares/AuthorizationCheckerMiddleware'
-import {BlogDoc} from '../model/Blog'
+import {BlogDoc} from '../models/Blog'
 import {IHttpResult} from '../interfaces/IHttpResult'
 import BlogService from '../services/BlogService'
-import {UserDoc} from '../model/User'
-import {IHttpQueryD} from '../interfaces/IHttpQuery'
+import {UserDoc} from '../models/User'
+import {IHttpQuery} from '../interfaces/IHttpQuery'
 import {beautyMongooseResult} from '../interceptors/BeautyMongooseResult'
-import {httpcode} from '../utils/Httpcode'
+import httpCode from '../utils/HttpCode'
 
 @JsonController('/blogs')
 export class BlogController {
-    @Get('/:id')
-    @HttpCode(httpcode.OK)
+    @Get('/:id') // get blog by id
+    @HttpCode(httpCode.OK)
     @UseInterceptor(beautyMongooseResult)
     async getBlog(@Param('id') id: number) {
-        await BlogService.selectBlogById(id)
+        return BlogService.selectBlogById(id)
     }
+
     @Get()
-    @HttpCode(httpcode.OK)
+    @HttpCode(httpCode.OK)
     @UseInterceptor(beautyMongooseResult)
-    async getBlogs(@QueryParams() query: IHttpQueryD) {
-        const blogs = await BlogService.selectBlogByQuery(query)
-        return blogs
+    async getBlogs(@QueryParams() query: IHttpQuery) { // 获取博客列表
+        return BlogService.selectBlogByQuery(query)
     }
+
     @Post()
-    @HttpCode(httpcode.CREATED)
+    @HttpCode(httpCode.CREATED)
     @UseBefore(AuthorizationCheckerMiddleware)
     async addBlog(@CurrentUser() user: UserDoc, @Body() blog: BlogDoc): Promise<IHttpResult> {
-        const result = await BlogService.createBlog(blog, user.userName)
-        return result
+        return BlogService.createBlog(blog, user.userName)
     }
+
     @Put()
-    @HttpCode(httpcode.OK)
+    @HttpCode(httpCode.OK)
     @UseBefore(AuthorizationCheckerMiddleware)
     async updateBlog(@Body() blog: BlogDoc): Promise<IHttpResult> {
-        const result = await BlogService.updateBlog(blog)
-        return result
+        return BlogService.updateBlog(blog)
     }
+
     @Delete('/:id')
-    @HttpCode(httpcode.NO_CONTENT)
+    @HttpCode(httpCode.NO_CONTENT)
     @UseBefore(AuthorizationCheckerMiddleware)
     async deleteBlog(@Param('id') id: number): Promise<IHttpResult> {
-        const result = await BlogService.deleteBlog(id)
-        return result
+        return BlogService.deleteBlog(id)
     }
 }
 

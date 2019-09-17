@@ -1,4 +1,4 @@
-export const httpcode = {
+export default {
     /**
      * 请求成功  幂等的
      */
@@ -22,7 +22,7 @@ export const httpcode = {
 
     FORBIDDEN: 403, // Forbidden：用户通过了身份验证，但是不具有访问资源所需的权限。
 
-    NO_TFINED: 404, // Not Found：所请求的资源不存在，或不可用。
+    NOT_FOUND: 404, // Not Found：所请求的资源不存在，或不可用。
 
     // 405 Method Not Allowed：用户已经通过身份验证，但是所用的 HTTP 方法不在他的权限之内。
 

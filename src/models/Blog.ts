@@ -2,6 +2,7 @@ import {createSchema, ExtractDoc, ExtractProps, Type, typedModel} from 'ts-mongo
 import {Counter, CounterDoc} from './Counter'
 import {log} from '../plugins/Log'
 import PhotoService from '../services/PhotoService'
+
 const BlogSchema = createSchema({
     id: Type.number({
         default: 0
@@ -83,7 +84,7 @@ BlogSchema.pre('save', async function (next) {
                 }
             }
         }
-        await next()
+        return next()
     } catch (e) {
         log.error(`blog add id error`)
         log.error(e)
