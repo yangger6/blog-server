@@ -1,6 +1,7 @@
 import {Action} from 'routing-controllers'
 import * as R from 'ramda'
 import {IHttpResult} from '../interfaces/IHttpResult'
+
 export const beautyMongooseResult = (action: Action, content: IHttpResult) => {
     const dataIsArray = (obj: IHttpResult): boolean => obj.data instanceof Array
     const toObject = (obj: any) => {

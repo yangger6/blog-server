@@ -1,9 +1,9 @@
 import * as R from 'ramda'
-import {User, UserDoc, UserProps} from '../model/User'
+import {User, UserDoc, UserProps} from '../models/User'
 import {log} from '../plugins/Log'
 import {IHttpResult} from '../interfaces/IHttpResult'
 import {genSalt, genToken, hash, mergeString} from '../utils/UtilsFuntions'
-import {httpcode} from '../utils/Httpcode'
+import HttpCode from '../utils/Httpcode'
 export default {
     async login(userName: string, password: string): Promise<IHttpResult> {
         try {
@@ -34,14 +34,14 @@ export default {
                 return {
                     error: 'login error',
                     detail: 'please checked you password',
-                    httpCode:  httpcode.UN_AUTHORIZED
+                    httpCode:  HttpCode.UN_AUTHORIZED
                 }
             }
         } catch (e) {
             return {
                 error: 'login error',
                 detail: 'please checked you password or username',
-                httpCode:  httpcode.UN_AUTHORIZED
+                httpCode:  HttpCode.UN_AUTHORIZED
             }
         }
     },
@@ -61,7 +61,7 @@ export default {
             return {
                 error: 'register error',
                 detail: e.message,
-                httpCode:  httpcode.INTERNAL_SERVER_ERROR
+                httpCode:  HttpCode.INTERNAL_SERVER_ERROR
             }
         }
     }

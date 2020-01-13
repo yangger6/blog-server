@@ -1,18 +1,27 @@
-import * as R from 'ramda'
 import {IHttpResult} from '../interfaces/IHttpResult'
-import {BlogDoc, Blog} from '../model/Blog'
+import {BlogDoc, Blog} from '../models/Blog'
 import {log} from '../plugins/Log'
-import {httpcode} from '../utils/Httpcode'
-import {IHttpQueryD} from '../interfaces/IHttpQuery'
-const filterParams = '-password -_id -__v'
+import HttpCode from '../utils/HttpCode'
+import {IHttpQuery} from '../interfaces/IHttpQuery'
+
+const baseFilterParams = '-password -_id -__v' // 去掉敏感参数
+const listFilterParams = ' -body -markdown' // 去掉体积大的参数
+const mergedFilterParams = (params: string | string[]) => {
+    if (typeof params === 'string') {
+        return baseFilterParams + params
+    } else {
+        return baseFilterParams + params.join('')
+    }
+}
+
 export default {
-    async selectBlogByQuery({title, tags, page, pageSize}: IHttpQueryD): Promise<IHttpResult> {
+    async selectBlogByQuery({title, tags, page, pageSize}: IHttpQuery): Promise<IHttpResult> {
         try {
-            pageSize = Number(pageSize) || 10 // default 10
+            pageSize = pageSize || 10 // default 10
             page = page || 1 // default page 1
             title = title || ''
             tags = typeof tags === 'string' ? tags.split(',') : []
-            const blogs = await Blog.find({
+            const blogArray = await Blog.find({
                 $or: [
                     {
                         title: {
@@ -29,12 +38,12 @@ export default {
             .sort('-createTime')
             .skip((page - 1) * pageSize)
             .limit(pageSize)
-            .select(filterParams)
+            .select(mergedFilterParams(listFilterParams))
             return {
                 msg: 'ok',
                 data: {
-                    data: blogs,
-                    total: blogs.length,
+                    data: blogArray,
+                    total: blogArray.length,
                     pageSize,
                     page
                 },
@@ -46,16 +55,16 @@ export default {
             return {
                 error: 'search error',
                 detail: 'query error',
-                httpCode:  httpcode.INTERNAL_SERVER_ERROR
+                httpCode:  HttpCode.INTERNAL_SERVER_ERROR
             }
         }
-
     },
+
     async selectBlogById(id: number): Promise<IHttpResult> {
         try {
             const blog = await Blog.findOne({
                 id
-            }).select(filterParams)
+            }).select(baseFilterParams)
             if (blog) {
                 return {
                     msg: 'ok',
@@ -71,10 +80,11 @@ export default {
             return {
                 error: 'search error',
                 detail: 'cannot find blog id',
-                httpCode:  httpcode.INTERNAL_SERVER_ERROR
+                httpCode:  HttpCode.INTERNAL_SERVER_ERROR
             }
         }
     },
+
     async createBlog(blog: BlogDoc, author: string): Promise<IHttpResult> {
         try {
             const newBlog = new Blog(blog)
@@ -89,10 +99,11 @@ export default {
             return {
                 error: 'create blog error',
                 detail: e.message,
-                httpCode:  httpcode.INTERNAL_SERVER_ERROR
+                httpCode:  HttpCode.INTERNAL_SERVER_ERROR
             }
         }
     },
+
     async updateBlog(blog: BlogDoc): Promise<IHttpResult> {
         try {
             console.log(blog)
@@ -112,10 +123,11 @@ export default {
             return {
                 error: 'update blog error',
                 detail: 'cannot find blog id to update',
-                httpCode:  httpcode.INTERNAL_SERVER_ERROR
+                httpCode:  HttpCode.INTERNAL_SERVER_ERROR
             }
         }
     },
+
     async deleteBlog(id: number): Promise<IHttpResult> {
         try {
             await Blog.deleteOne({id})
@@ -126,7 +138,7 @@ export default {
             return {
                 error: 'delete blog error',
                 detail: 'cannot find blog id to delete',
-                httpCode:  httpcode.INTERNAL_SERVER_ERROR
+                httpCode:  HttpCode.INTERNAL_SERVER_ERROR
             }
         }
     }
