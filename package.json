@@ -19,7 +19,7 @@
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^8.0.0-alpha.1",
     "log4js": "^4.1.1",
-    "mongoose": "^5.5.6",
+    "mongoose": "^5.7.5",
     "request": "^2.88.0",
     "routing-controllers": "^0.7.7",
     "ts-mongoose": "0.0.14",
